@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 2.8)
 project (ACMMP)
 
-set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-11")
 find_package(CUDA 6.0 REQUIRED ) # For Cuda Managed Memory and c++11
 find_package(OpenCV REQUIRED )
 
@@ -9,7 +13,8 @@ find_package(OpenCV REQUIRED )
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(.)
 
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 --use_fast_math --maxrregcount=128 --ptxas-options=-v -std=c++11 --compiler-options -Wall -gencode arch=compute_60,code=sm_60)
+# set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 --use_fast_math --maxrregcount=128 --ptxas-options=-v --compiler-options -std=c++17 --compiler-options  -Wall -gencode arch=compute_60,code=sm_60)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 --use_fast_math --maxrregcount=128 --ptxas-options=-v --compiler-options -std=c++17 -gencode arch=compute_60,code=sm_60)
 if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=c++11)
     add_definitions(-pthread)
@@ -37,6 +42,7 @@ cuda_add_executable(
     ACMMP.cu
     main.cpp
     )
+target_compile_features(ACMMP PRIVATE cxx_std_17)
 
 # For linking ...
 # Specify target & libraries to link it with

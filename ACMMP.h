@@ -15,7 +15,7 @@ void ProjectonCamera(const float3 PointX, const Camera camera, float2 &point, fl
 float GetAngle(const cv::Vec3f &v1, const cv::Vec3f &v2);
 void StoreColorPlyFileBinaryPointCloud (const std::string &plyFilePath, const std::vector<PointList> &pc);
 
-void RunJBU(const cv::Mat_<float>  &scaled_image_float, const cv::Mat_<float> &src_depthmap, const std::string &dense_folder , const Problem &problem);
+void RunJBU(const cv::Mat_<float>  &scaled_image_float, const cv::Mat_<float> &src_depthmap, const std::string &out_folder , const Problem &problem);
 
 #define CUDA_SAFE_CALL(error) CudaSafeCall(error, __FILE__, __LINE__)
 #define CUDA_CHECK_ERROR() CudaCheckError(__FILE__, __LINE__)
@@ -57,9 +57,9 @@ public:
     ACMMP();
     ~ACMMP();
 
-    void InuputInitialization(const std::string &dense_folder, const std::vector<Problem> &problem, const int idx);
-    void Colmap2MVS(const std::string &dense_folder, std::vector<Problem> &problems);
-    void CudaSpaceInitialization(const std::string &dense_folder, const Problem &problem);
+    void InuputInitialization(const std::string &dense_folder, const std::string &out_folder, const std::vector<Problem> &problem, const int idx);
+    void Colmap2MVS(const std::string &dense_folder, const std::string &out_folder, std::vector<Problem> &problems);
+    void CudaSpaceInitialization(const std::string &dense_folder, const std::string &out_folder, const Problem &problem);
     void RunPatchMatch();
     void SetGeomConsistencyParams(bool multi_geometry);
     void SetPlanarPriorParams();

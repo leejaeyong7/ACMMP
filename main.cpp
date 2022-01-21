@@ -47,7 +47,7 @@ int ComputeMultiScaleSettings(const std::string &dense_folder, std::vector<Probl
 
     for (size_t i = 0; i < num_images; ++i) {
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".jpg";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".png";
         cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
 
         int rows = image_uint.rows;
@@ -140,6 +140,7 @@ void ProcessProblem(const std::string &dense_folder, const std::string &out_fold
         }
         std::string triangulation_path = result_folder + "/triangulation.png";
         cv::imwrite(triangulation_path, srcImage);
+        std::cout << "Imwrite" << std::endl;
 
         cv::Mat_<float> mask_tri = cv::Mat::zeros(height, width, CV_32FC1);
         std::vector<float4> planeParams_tri;
@@ -225,7 +226,7 @@ void JointBilateralUpsampling(const std::string &dense_folder, const std::string
 
     std::string image_folder = dense_folder + std::string("/images");
     std::stringstream image_path;
-    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".jpg";
+    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".png";
     cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
     cv::Mat image_float;
     image_uint.convertTo(image_float, CV_32FC1);
@@ -238,7 +239,7 @@ void JointBilateralUpsampling(const std::string &dense_folder, const std::string
     cv::Mat scaled_image_float;
     cv::resize(image_float, scaled_image_float, cv::Size(new_cols,new_rows), 0, 0, cv::INTER_LINEAR);
 
-    std::cout << "Run JBU for image " << problem.ref_image_id <<  ".jpg" << std::endl;
+    std::cout << "Run JBU for image " << problem.ref_image_id <<  ".png" << std::endl;
     RunJBU(scaled_image_float, ref_depth, out_folder, problem );
 }
 
@@ -262,7 +263,7 @@ void RunFusion(std::string &dense_folder, const std::string & out_folder, const 
     for (size_t i = 0; i < num_images; ++i) {
         std::cout << "Reading image " << std::setw(8) << std::setfill('0') << i << "..." << std::endl;
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".jpg";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".png";
         cv::Mat_<cv::Vec3b> image = cv::imread (image_path.str(), cv::IMREAD_COLOR);
         std::stringstream cam_path;
         cam_path << cam_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << "_cam.txt";
@@ -496,7 +497,7 @@ int main(int argc, char* argv[])
     }
 
     geom_consistency = true;
-    RunFusion(dense_folder, output_folder, problems, geom_consistency, output_file);
+    RunFusion(dense_folder, output_folder, problems, geom_consistency, ply_file);
 
     return 0;
 }

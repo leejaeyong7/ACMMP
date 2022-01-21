@@ -473,7 +473,7 @@ void ACMMP::InuputInitialization(const std::string &dense_folder,  const std::st
     std::string cam_folder = dense_folder + std::string("/cameras");
 
     std::stringstream image_path;
-    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".jpg";
+    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".png";
     cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
     cv::Mat image_float;
     image_uint.convertTo(image_float, CV_32FC1);
@@ -488,7 +488,7 @@ void ACMMP::InuputInitialization(const std::string &dense_folder,  const std::st
     size_t num_src_images = problem.src_image_ids.size();
     for (size_t i = 0; i < num_src_images; ++i) {
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.src_image_ids[i] << ".jpg";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.src_image_ids[i] << ".png";
         cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
         cv::Mat image_float;
         image_uint.convertTo(image_float, CV_32FC1);

@@ -48,9 +48,9 @@ struct Camera {
 struct Problem {
     int ref_image_id;
     std::vector<int> src_image_ids;
-    int max_image_size = 3200;
+    int max_image_size = 1500;
     int num_downscale = 0;
-    int cur_image_size = 3200;
+    int cur_image_size = 1500;
 };
 
 struct Triangle {

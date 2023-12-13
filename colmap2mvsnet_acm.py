@@ -46,7 +46,6 @@ CAMERA_MODELS = {
 CAMERA_MODEL_IDS = dict([(camera_model.model_id, camera_model) \
                          for camera_model in CAMERA_MODELS])
 
-
 def read_next_bytes(fid, num_bytes, format_char_sequence, endian_character="<"):
     """Read and unpack the next bytes from a binary file.
     :param fid:
@@ -303,8 +302,8 @@ def calc_score(inputs, images, points3d, extrinsic, args):
 
 def processing_single_scene(args):
 
-    image_dir = os.path.join(args.dense_folder, 'images')
-    model_dir = os.path.join(args.dense_folder, 'sparse')
+    image_dir = args.image_folder
+    model_dir = args.sparse_folder
     cam_dir = os.path.join(args.save_folder, 'cams')
     image_converted_dir = os.path.join(args.save_folder, 'images')
 
@@ -454,7 +453,8 @@ def processing_single_scene(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert colmap camera')
 
-    parser.add_argument('--dense_folder', required=True, type=str, help='dense_folder.')
+    parser.add_argument('--sparse_folder', required=True, type=str, help='dense_folder.')
+    parser.add_argument('--image_folder', required=True, type=str, help='dense_folder.')
     parser.add_argument('--save_folder', required=True, type=str, help='save_folder.')
 
     parser.add_argument('--max_d', type=int, default=192)

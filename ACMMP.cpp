@@ -165,7 +165,8 @@ Camera ReadCamera(const std::string &cam_path)
     float depth_num;
     float interval;
     
-    // file >> camera.depth_min >> interval >> depth_num >> camera.depth_max;
+    file >> camera.depth_min >> interval >> depth_num >> camera.depth_max;
+    /*
     file >> camera.depth_min;
     float temp_val = -1;
     float last_val = -1;
@@ -174,6 +175,7 @@ Camera ReadCamera(const std::string &cam_path)
       last_val = temp_val;
     }
     camera.depth_max = last_val;
+    */
 
     return camera;
 }
@@ -470,10 +472,10 @@ void ACMMP::InuputInitialization(const std::string &dense_folder,  const std::st
     const Problem problem = problems[idx];
 
     std::string image_folder = dense_folder + std::string("/images");
-    std::string cam_folder = dense_folder + std::string("/cameras");
+    std::string cam_folder = dense_folder + std::string("/cams");
 
     std::stringstream image_path;
-    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".png";
+    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".jpg";
     cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
     cv::Mat image_float;
     image_uint.convertTo(image_float, CV_32FC1);
@@ -488,7 +490,7 @@ void ACMMP::InuputInitialization(const std::string &dense_folder,  const std::st
     size_t num_src_images = problem.src_image_ids.size();
     for (size_t i = 0; i < num_src_images; ++i) {
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.src_image_ids[i] << ".png";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.src_image_ids[i] << ".jpg";
         cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
         cv::Mat image_float;
         image_uint.convertTo(image_float, CV_32FC1);

@@ -47,7 +47,7 @@ int ComputeMultiScaleSettings(const std::string &dense_folder, std::vector<Probl
 
     for (size_t i = 0; i < num_images; ++i) {
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".png";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".jpg";
         cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
 
         int rows = image_uint.rows;
@@ -226,7 +226,7 @@ void JointBilateralUpsampling(const std::string &dense_folder, const std::string
 
     std::string image_folder = dense_folder + std::string("/images");
     std::stringstream image_path;
-    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".png";
+    image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problem.ref_image_id << ".jpg";
     cv::Mat_<uint8_t> image_uint = cv::imread(image_path.str(), cv::IMREAD_GRAYSCALE);
     cv::Mat image_float;
     image_uint.convertTo(image_float, CV_32FC1);
@@ -239,7 +239,7 @@ void JointBilateralUpsampling(const std::string &dense_folder, const std::string
     cv::Mat scaled_image_float;
     cv::resize(image_float, scaled_image_float, cv::Size(new_cols,new_rows), 0, 0, cv::INTER_LINEAR);
 
-    std::cout << "Run JBU for image " << problem.ref_image_id <<  ".png" << std::endl;
+    std::cout << "Run JBU for image " << problem.ref_image_id <<  ".jpg" << std::endl;
     RunJBU(scaled_image_float, ref_depth, out_folder, problem );
 }
 
@@ -247,7 +247,7 @@ void RunFusion(std::string &dense_folder, const std::string & out_folder, const 
 {
     size_t num_images = problems.size();
     std::string image_folder = dense_folder + std::string("/images");
-    std::string cam_folder = dense_folder + std::string("/cameras");
+    std::string cam_folder = dense_folder + std::string("/cams");
 
     std::vector<cv::Mat> images;
     std::vector<Camera> cameras;
@@ -260,10 +260,13 @@ void RunFusion(std::string &dense_folder, const std::string & out_folder, const 
     normals.clear();
     masks.clear();
 
+    std::map<int, int> image_id_2_index;
+
     for (size_t i = 0; i < num_images; ++i) {
         std::cout << "Reading image " << std::setw(8) << std::setfill('0') << i << "..." << std::endl;
+	image_id_2_index[problems[i].ref_image_id] = i;
         std::stringstream image_path;
-        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".png";
+        image_path << image_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << ".jpg";
         cv::Mat_<cv::Vec3b> image = cv::imread (image_path.str(), cv::IMREAD_COLOR);
         std::stringstream cam_path;
         cam_path << cam_folder << "/" << std::setw(8) << std::setfill('0') << problems[i].ref_image_id << "_cam.txt";
@@ -320,7 +323,8 @@ void RunFusion(std::string &dense_folder, const std::string & out_folder, const 
                 float dynamic_consistency = 0;
 
                 for (int j = 0; j < num_ngb; ++j) {
-                    int src_id = problems[i].src_image_ids[j];
+		    int src_id = image_id_2_index[problems[i].src_image_ids[j]];
+                    // int src_id = problems[i].src_image_ids[j];
                     const int src_cols = depths[src_id].cols;
                     const int src_rows = depths[src_id].rows;
                     float2 point;
@@ -381,7 +385,8 @@ void RunFusion(std::string &dense_folder, const std::string & out_folder, const 
                     for (int j = 0; j < num_ngb; ++j) {
                         if (used_list[j].x == -1)
                             continue;
-                        masks[problems[i].src_image_ids[j]].at<uchar>(used_list[j].y, used_list[j].x) = 1;
+			masks[image_id_2_index[problems[i].src_image_ids[j]]].at<uchar>(used_list[j].y, used_list[j].x) = 1;
+                        // masks[problems[i].src_image_ids[j]].at<uchar>(used_list[j].y, used_list[j].x) = 1;
                     }
                 }
             }
